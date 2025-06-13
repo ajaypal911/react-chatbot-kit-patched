@@ -1,6 +1,6 @@
 {
-  "name": "react-chatbot-kit",
-  "version": "2.2.0",
+  "name": "react-chatbot-kit-patched",
+  "version": "1.0.1",
   "homepage": "https://fredrikoseberg.github.io/react-chatbot-kit-docs/",
   "description": "Fully customizable chatbot kit for react.",
   "main": "build/index.js",
@@ -12,7 +12,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --mode=production",
     "build-watch": "webpack --watch",
-    "prepare": "yarn run build"
+    "prepare": "yarn run build",
+    "release": "npm version patch && npm publish --access public"
   },
   "author": {
     "name": "Fredrik Strand Oseberg",
@@ -33,6 +34,6 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/FredrikOseberg/react-chatbot-kit"
+    "url": "https://github.com/ajaypal911/react-odometerjs-patched"
   }
 }
