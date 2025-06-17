@@ -318,6 +318,7 @@ const Chat = ({
               onKeyDown={handleKeyDown}
             />
             <button
+              type='submit'
               className="react-chatbot-kit-chat-btn-send"
               style={customButtonStyle}
             >
