@@ -61,7 +61,7 @@ const Chat = ({
   actions,
   messageContainerRef,
 }: IChatProps) => {
-  const { messages } = state;
+  const { messages, isLoading } = state;
 
   const [input, setInputValue] = useState('');
 
@@ -223,6 +223,9 @@ const Chat = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if(isLoading || messages?.find((message: IMessage) => message.loading)) {
+      return;
+    }
 
     if (validator && typeof validator === 'function') {
       if (validator(input)) {
