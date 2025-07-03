@@ -97,6 +97,9 @@ const ChatbotMessage = ({
             show={callIfExists(customComponents?.botChatMessage, {
               message,
               loader: <Loader />,
+              loading,
+              delay,
+              id
             })}
             elseShow={
               <div
