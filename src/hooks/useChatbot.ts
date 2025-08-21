@@ -83,7 +83,7 @@ const useChatbot = ({
         messages: messageHistory,
       }));
     }
-  }, []);
+  }, [messageHistory]);
 
   useEffect(() => {
     const refValue: HTMLDivElement = messageContainerRef.current;
