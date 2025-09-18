@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, SetStateAction } from 'react';
+import React, { useState, useRef, useEffect, useCallback, SetStateAction } from 'react';
 import ConditionallyRender from 'react-conditionally-render';
 
 import UserChatMessage from '../UserChatMessage/UserChatMessage';
@@ -64,6 +64,35 @@ const Chat = ({
   const { messages, isLoading } = state;
 
   const [input, setInputValue] = useState('');
+  const isUserScrolledUpRef = useRef(false);
+  const isScrollingRef = useRef(false);
+
+  const isNearBottom = () => {
+    if (!messageContainerRef.current) return true;
+    
+    const { scrollTop, scrollHeight, clientHeight } = messageContainerRef.current;
+    const threshold = 40; // Small threshold - any scroll up should persist position
+    const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
+    const nearBottom = distanceFromBottom < threshold;
+    
+    return nearBottom;
+  };
+
+  const handleScroll = useCallback(() => {
+    if (!messageContainerRef.current) return;
+    
+    // Immediately set scrolling flag to prevent auto-scroll
+    isScrollingRef.current = true;
+    
+    // Immediate scroll detection without debounce
+    const nearBottom = isNearBottom();
+    isUserScrolledUpRef.current = !nearBottom;   
+ 
+    // Clear scrolling flag after a short delay
+    setTimeout(() => {
+      isScrollingRef.current = false;
+    }, 100);
+  }, []);
 
   const scrollIntoView = () => {
     setTimeout(() => {
@@ -76,8 +105,24 @@ const Chat = ({
 
   useEffect(() => {
     if (disableScrollToBottom) return;
-    scrollIntoView();
-  });
+    
+    // Only auto-scroll if user hasn't manually scrolled up AND not currently scrolling
+    if (!isUserScrolledUpRef.current && !isScrollingRef.current) {
+      scrollIntoView();
+    }
+  }, [messages, disableScrollToBottom]);
+
+  // Add scroll event listener to track user scroll position
+  useEffect(() => {
+    const messageContainer = messageContainerRef.current;
+    if (!messageContainer) return;
+
+    messageContainer.addEventListener('scroll', handleScroll);
+    
+    return () => {
+      messageContainer.removeEventListener('scroll', handleScroll);
+    };
+  }, [handleScroll]);
 
   const showAvatar = (messages: any[], index: number) => {
     if (index === 0) return true;
@@ -250,6 +295,7 @@ const Chat = ({
       messages: [...state.messages, createChatMessage(input, 'user')],
     }));
 
+    // Always scroll to bottom when user sends a message
     scrollIntoView();
     setInputValue('');
   };
